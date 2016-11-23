@@ -6,7 +6,8 @@
 * pip 8.1.2-1
 * nltk 3.0 
 
+````
 for nltk installation, run:
-sudo pip install -U nltk
-
+$ sudo pip install -U nltk
+````
 
