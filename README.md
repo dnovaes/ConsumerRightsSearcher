@@ -18,7 +18,7 @@ $ pip install -U pip
 $ pip install setuptools
 ````
 
-close and reopen terminal and then type:
+close and reopen terminal then type:
 ````
 $ pip install nlpnet
 ````
