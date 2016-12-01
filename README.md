@@ -24,6 +24,7 @@ $ pip install setuptools
 ````
 Close and reopen terminal then type:
 ````
+$ pip install numpy
 $ pip install nlpnet
 ````
 
