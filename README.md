@@ -28,3 +28,7 @@ $ pip install numpy
 $ pip install nlpnet
 ````
 
+Added elasticSearch to the project... but still testing. Soon ill release some info here.
+
+## Elastic Search 
+-> with nodejs API
