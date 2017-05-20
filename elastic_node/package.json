@@ -1,0 +1,26 @@
+{
+  "name": "siri-law",
+  "version": "0.0.0",
+  "description": "init project of siriLaw (interface to connect with API)",
+  "main": "index.js",
+  "dependencies": {
+    "elasticsearch": "^13.0.1",
+    "express": "^4.15.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dnovaes/Siri-Law-Br.git"
+  },
+  "keywords": [
+    "sirilaw",
+    "law",
+    "lawbr",
+    "nlp"
+  ],
+  "author": "Diego Novaes <novaesdigo@gmail.com> (github.com/dnovaes)",
+  "license": "MIT"
+}
