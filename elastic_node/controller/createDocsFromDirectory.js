@@ -1,10 +1,16 @@
-var fs = require("fs");
-var getDirTitle = require("dirTitle");
+var fs = require("fs"); //module to read files
+var getDirTitle = require("dirTitle"); //module with utils functions for directory
+var client = require("../connection.js"); //module responsible for the call to API elastic search
 
-var dirPath = process.argv[2];
+var dirPath = process.argv[2]!= undefined ? process.argv[2]: 0; 
+if (!dirPath){
+  console.log("Please provide a valid path as argument");
+  process.exit();
+}
+
+console.log("Initiating the index of document by directory");
 
 // Initial function to generate json objects to request a index document in the elastic search
-
 // looping through the documents and print all the docs in the directory
 var printAllFiles = function(dirPath, callback){
   fs.readdir( dirPath, function(err, files){
@@ -14,6 +20,7 @@ var printAllFiles = function(dirPath, callback){
       }
  
       var jsonObj;
+
       files.forEach( function( file, index){
         if(fs.lstatSync(dirPath+file).isDirectory()){
 
@@ -27,28 +34,33 @@ var printAllFiles = function(dirPath, callback){
 
         if(file != "notes_cdc"){
           console.log(file);
-          fs.readFile(dirPath+file, 'utf8', function (err, data){
+          data = fs.readFileSync(dirPath+file).toString();
+//          fs.readFile(dirPath+file, 'utf8', function (err, data){
             if(err){
               return console.log(err);
             }
 
             var title = getDirTitle(dirPath);
-            var titleName = fs.readFileSync(dirPath+title+".txt").toString();
 
+            var titleName = fs.readFileSync(dirPath+title+".txt").toString().trim();
+
+            // key 'title' and 'type' are required.
             jsonObj = {
               index: 'cdc',
-              title: title,
-              title_name: titleName,
-              content: data
+              type: titleName.trim(),
+              body: {
+                title: title,
+                content: data
+              }
             };
-
-            /*
-            client.index(jsonObj), function(err, resp, status){
-              console.log(resp);
+            //debug
+            //console.log(jsonObj);
+            
+            //index new documents based on the json object
+            client.index(jsonObj, function(err, resp, status){
+                console.log(resp);
             });
-            */
-
-          });
+//          });
         }
       });
   });
