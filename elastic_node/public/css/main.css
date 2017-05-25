@@ -1,0 +1,60 @@
+*{
+margin: 0 auto;
+}
+
+body{
+  width: 1024px;
+  height: 768px;
+}
+
+#div-parent{
+  margin: 0px 30%;
+  height: 100%;
+}
+
+#div-parent span{
+  display:block;
+}
+
+#claim-field, #claim-field input{
+  width:100%;
+}
+
+#claim-field input{
+  border-style: solid;
+  border-color: #9191ff;
+  height: 30px;
+}
+
+#div-img-center{
+  width: auto;
+  height: 50%;
+}
+
+#div-img-center img{
+height: 100%;
+}
+
+/*
+ * Place Holder
+ */
+
+::-webkit-input-placeholder {
+  font-size: 20px;
+  text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-size: 20px;
+  text-align: center;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-size: 20px;
+  text-align: center;
+}
+
+:-ms-input-placeholder {
+  font-size: 20px;
+  text-align: center;
+}
