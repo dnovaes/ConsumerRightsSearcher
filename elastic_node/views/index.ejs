@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/vue"></script>
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <title>Siri Law BR</title>
+</head>
+<body>
+<div id="div-parent">
+    <div id="div-img-center">
+      <img src="imgs/cute_robot1.jpg"></img>
+    </div>
+    <span id="claim-field">
+      <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="submitClaim">
+      <p v-if="outputBool">Searching: {{ claimData }}</p>
+    </span>
+</div>
+<script type="text/javascript">
+var app = new Vue({
+  el: '#div-parent',
+  data: {
+    claimData: "",
+    outputBool: false,
+    phValue: "Olá! Como posso ajuda-lo?"
+  },
+  watch: {
+    claimData: function(event){
+      if(app.claimData){
+        app.outputBool= true; 
+      }else{
+        app.outputBool= false; 
+        app.phValue = "Olá! Como posso ajuda-lo?"
+      }
+    }
+  },
+  methods: {
+    changeBorder: function(event){
+    },
+    submitClaim: function(e){
+      if(e.key == "Enter"){
+        alert("OK!");
+        app.claimData = "";
+      }
+    }
+  }
+})
+</script>
+</body>
+</html>
