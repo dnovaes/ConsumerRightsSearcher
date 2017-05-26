@@ -1,10 +1,10 @@
-var express = require('express');
 var fs = require('fs');
 var path = require('path');
 
 module.exports = function(parent, options){
   var dir = path.join(__dirname, '..', 'controller');
   var verbose = options.verbose;
+  var express = options.express;
 
   fs.readdirSync(dir).forEach(function(name){
     var file = path.join(dir, name)

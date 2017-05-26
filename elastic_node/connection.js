@@ -4,7 +4,12 @@ var client = new es.Client({
   hosts:[
     'http://localhost:9200',
   ],
-  log: 'trace'
+  log: 'trace',
+  index:{
+    blocks: {
+      read_only: true
+    }
+  }
 });
 
 module.exports = client;
