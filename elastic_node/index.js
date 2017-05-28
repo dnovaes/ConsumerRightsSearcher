@@ -22,6 +22,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //parse request bodies (req.body / POST )
+//app.use(bodyparser());
 app.use(bodyparser.urlencoded({ extended: true}));
 
 //load file of route configs | also called as controllers
@@ -57,10 +58,12 @@ router.get('/elastic/:id', function(req, res){
 //validation of a param
 //router.param('name', function
 
+/*
 router.get('/:viewname', function (req, res){
     //res.render('default', { viewname: req.params.viewname+req.query.color });
     res.render('default', { viewname: req.params.viewname});
 });
+*/
 
 //router contain functions that not allow the request to go beyound it (res.send)
 app.use('/', router);

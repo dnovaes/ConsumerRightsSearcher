@@ -8,8 +8,17 @@ body{
 }
 
 #div-parent{
-  margin: 0px 30%;
   height: 100%;
+}
+
+#div-top{
+  height: 60%;
+  margin: 0px 30%;
+}
+
+#div-bottom{
+  width: 100%;
+  height: 30%;
 }
 
 #div-parent span{
@@ -28,7 +37,7 @@ body{
 
 #div-img-center{
   width: auto;
-  height: 50%;
+  height: 384px;
 }
 
 #div-img-center img{
@@ -57,4 +66,10 @@ height: 100%;
 :-ms-input-placeholder {
   font-size: 20px;
   text-align: center;
+}
+
+#results-search{
+  width: 100%;
+  height: 100%;
+  background-color: blue;
 }

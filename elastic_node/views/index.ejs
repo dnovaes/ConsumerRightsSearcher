@@ -12,6 +12,7 @@
 <body>
 
 <div id="div-parent">
+  <div id="div-top">
     <div id="div-img-center">
       <img src="imgs/cute_robot1.jpg"></img>
     </div>
@@ -19,6 +20,13 @@
       <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearch">
       <p v-if="outputBool">Searching: {{ claimData }}</p>
     </span>
+  </div>
+  <div id="div-bottom">
+    <div id="results-search" v-if="resultsBool">
+      Results:<br>
+      <p><pre>{{ results }}</pre></p>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
@@ -27,7 +35,10 @@ var app = new Vue({
   data: {
     claimData: "",
     outputBool: false,
-    phValue: "Olá! Como posso ajuda-lo?"
+    resultsBool: false,
+    phValue: "Olá! Como posso ajuda-lo?",
+    results: "",
+    hits: ""
   },
   watch: {
     claimData: function(event){
@@ -40,81 +51,46 @@ var app = new Vue({
     }
   },
   methods: {
-    changeBorder: function(event){
-    },
-    submitClaim: function(e){
-      if(e.key == "Enter"){
-        alert("OK!");
-        app.claimData = "";
-      }
-    },
     ajaxSearch: function(e){
-      config = {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-//          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-//          'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-        }
-      };
+      if((e.key == "Enter") && (app.claimData != "")){
+        config = {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+  //          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+  //          'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+          }
+          /*data: {
+            index: 'cdc',
+            body: {
+              query: {
+                match: {"content": app.claimData }
+              }
+            }
+          }*/
+        };
 
-      axios.get('http://localhost:9200/?pretty', config).then(function (res){
-            console.log(res);
-            console.log(res.data);
+//        axios.get('http://localhost:9200/?pretty', config).then(function (res){
+//        axios.post('http://localhost:8081/search', config).then(function (res){
+        axios.get('http://localhost:9200/cdc/_search?q='+app.claimData, config).then(function (res){
+          app.hits = res.data.hits
+          //app.results = hits;
+          if(app.hits.total > 0){
+            app.resultsBool = true;
+            app.hits.hits.forEach(function(val, i){
+              app.results += val._source.content;
+              app.results += "\n"
+            });
+          }
+          //console.log(res.data);
+          app.claimData = "";
         }).catch(function (error){
             console.log(error);
         });
-    },
+      }
+    }
   }
 })
 
-/*
-
-function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
-  if ("withCredentials" in xhr) {
-
-    // Check if the XMLHttpRequest object has a "withCredentials" property.
-    // "withCredentials" only exists on XMLHTTPRequest2 objects.
-    xhr.open(method, url, true);
-
-  } else if (typeof XDomainRequest != "undefined") {
-
-    // Otherwise, check if XDomainRequest.
-    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-    xhr = new XDomainRequest();
-    xhr.open(method, url);
-
-  } else {
-
-    // Otherwise, CORS is not supported by the browser.
-    xhr = null;
-
-  }
-  return xhr;
-}
-
-var xhr = createCORSRequest('GET', 'http://localhost:9200/?pretty');
-
-if (!xhr) {
-  throw new Error('CORS not supported');
-  console.log("CORS not supported");
-}else{
-  console.log(xhr);
-}
-
-// Response handlers.
-xhr.onload = function() {
-  var text = xhr.responseText;
-  var title = getTitle(text);
-  alert('Response from CORS request to ' + url + ': ' + title);
-};
-
-xhr.onerror = function() {
-  alert('Woops, there was an error making the request.');
-};
-
-xhr.send();
-*/
 </script>
 
 </body>
