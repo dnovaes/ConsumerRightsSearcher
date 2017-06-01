@@ -35,4 +35,4 @@ Added elasticSearch to the project... but still testing. Soon ill release some i
 
 Initial screen with a output example of
 
-![Image of Initial System](http://imgur.com/a/dUjvd)
+![Image of Initial System] (http://imgur.com/a/dUjvd)
