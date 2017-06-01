@@ -32,3 +32,8 @@ Added elasticSearch to the project... but still testing. Soon ill release some i
 
 ## Elastic Search 
 -> with nodejs API
+
+Initial screen with a output example of
+
+![Image of Initial System]
+(http://imgur.com/a/dUjvd)
