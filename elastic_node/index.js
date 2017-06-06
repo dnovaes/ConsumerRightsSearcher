@@ -1,4 +1,18 @@
 //4919415
+/*
+ * ex1: "I made the purchase and payment for two products in \
+the PurpleFire.com store on December 9th. And they have 15 days to do \
+the posting. But there is no doing. And I've been waiting for more than\
+1 month. I contacted the company several times and talked to Amanda\
+(amandapt1313@gmail.com), but they did not solve my problem. I have all\
+the conversations filed. And I want to point out here that the \
+PurpleFire store has no CNPJ and no address on the site. I would not recommend\
+anyone to make any purchase with the store mentioned."
+
+ex2 :
+i would like to have my money back based on the product that i bought in 25 days back then. It suffered some decadential loss but still not satisfied with my product."
+*/
+
 // BASE SETUP 
 
 var express    = require('express')
@@ -24,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //parse request bodies (req.body / POST )
 //app.use(bodyparser());
 app.use(bodyparser.urlencoded({ extended: true}));
+app.use(bodyparser.json());
 
 //load file of route configs | also called as controllers
 //require('./controller/routing.js')(app, { verbose: !module.parent, express: express });
@@ -33,6 +48,29 @@ var router = express.Router();
 router.get('/', function (req, res){
   res.render('index');
 });
+
+//route that handle ajax requests
+router.post('/ajax/:function', function(req, res){
+    console.log(req.params);
+    
+    if(req.params.function = "stopwordsremoval"){
+      var stopwords = "well good bad can could may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does have had has who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with not one two three four five your on a an";
+      var claim = req.body.claim;
+      stopwords = stopwords.split(" "); 
+      //console.log(typeof(stopwords));
+    
+      console.log("applying SW removal");
+      var regExp = new RegExp();
+
+      for(var i in stopwords){
+        regExp = new RegExp("\\b"+stopwords[i]+"\\b");
+        claim = claim.replace(regExp, ""); 
+      }
+      console.log("result after swRemoval: "+claim);
+      
+      res.send(claim); 
+    }
+}); 
 
 // route with parameters ex: localhost:8081/elastic/:id
 router.get('/elastic/:id', function(req, res){
