@@ -77,21 +77,9 @@ var app = new Vue({
         config = {
           headers: {
             'Access-Control-Allow-Origin': '*'
-  //          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-  //          'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
           }
-          /*data: {
-            index: 'cdc',
-            body: {
-              query: {
-                match: {"content": app.claimData }
-              }
-            }
-          }*/
         };
 
-//        axios.get('http://localhost:9200/?pretty', config).then(function (res)
-//        axios.post('http://localhost:8081/search', config).then(function (res)
         axios.get('http://localhost:9200/cdc/_search?q='+app.claimData, config).then(function (res){
           app.hits = res.data.hits
 
@@ -123,7 +111,6 @@ var app = new Vue({
           claim: app.claimData
         })
         .then(function (res){
-          console.log(res.data);
           app.keywords = res.data.keywords;
           app.claimDataSW = "Keywords: "+res.data.keywords;
           app.ajaxSearch(e);
