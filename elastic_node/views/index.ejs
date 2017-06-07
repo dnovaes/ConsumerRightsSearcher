@@ -2,7 +2,7 @@
 <html>
 <head>
 
-  <script src="https://unpkg.com/vue"></script>
+  <script src="js/vue@2.3.3"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -17,7 +17,7 @@
       <img src="imgs/cute_robot1.jpg"></img>
     </div>
     <span id="claim-field">
-      <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearch">
+      <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearchSW">
       <p v-if="outputBool">Searching: {{ claimData }}</p>
     </span>
     <span id="sw-field">
@@ -33,11 +33,15 @@
 </div>
 
 <script type="text/javascript">
+
+
+
 var app = new Vue({
   el: '#div-parent',
   data: {
     claimData: "",
     claimDataSW: "",
+    keywords: "",
     outputBool: false,
     resultsBool: false,
     phValue: "Olá! Como posso ajuda-lo?",
@@ -57,7 +61,6 @@ var app = new Vue({
   methods: {
     ajaxSearch: function(e){
       if((e.key == "Enter") && (app.claimData != "")){
-        app.removeSW();
         config = {
           headers: {
             'Access-Control-Allow-Origin': '*'
@@ -74,15 +77,23 @@ var app = new Vue({
           }*/
         };
 
-//        axios.get('http://localhost:9200/?pretty', config).then(function (res){
-//        axios.post('http://localhost:8081/search', config).then(function (res){
+//        axios.get('http://localhost:9200/?pretty', config).then(function (res)
+//        axios.post('http://localhost:8081/search', config).then(function (res)
         axios.get('http://localhost:9200/cdc/_search?q='+app.claimData, config).then(function (res){
           app.hits = res.data.hits
-          //app.results = hits;
 
           app.resultsBool = true;
+
+        //transform the string keywords in a proper array of words
+/*      console.log("keywords: "+app.keywords);
+        app.keywords = app.keywords.split(" ");
+        console.log(app.keywords);
+*/
+
           if(app.hits.total > 0){
             app.hits.hits.forEach(function(val, i){
+              //tempContent = val._source.content
+              //tempContent = tempContent.replace(); 
               app.results += val._source.content;
               app.results += "\n"
             });
@@ -98,18 +109,23 @@ var app = new Vue({
         });
       }
     },
-    removeSW: function(){
-      axios.post('/ajax/stopwordsremoval', {
-        claim: app.claimData
-      })
-      .then(function (res){
-        console.log(res.data);
-        app.claimDataSW = "Keywords: "+res.data;
-        //console.log(res.data.claim);
-      })
-      .catch(function(err){
-        console.log(err);
-      });
+    ajaxSearchSW: function(e){
+      if((e.key == "Enter") && (app.claimData != "")){
+
+        axios.post('/ajax/stopwordsremoval', {
+          claim: app.claimData
+        })
+        .then(function (res){
+          console.log(res.data);
+          app.keywords = res.data.keywords;
+          app.claimDataSW = "Keywords: "+res.data.keywords;
+          console.log("end of function ajaxSearchSW");
+          app.ajaxSearch(e);
+        })
+        .catch(function(err){
+          console.log(err);
+        });
+      }
     },
     delayedRemoveResults: function(){
       setTimeout(function(){

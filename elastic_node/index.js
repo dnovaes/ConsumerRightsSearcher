@@ -19,6 +19,7 @@ var express    = require('express')
 var app        = express()
 var path       = require('path');
 var bodyparser = require('body-parser');
+var functions  = require(__dirname+"/public/js/ext_functions.js");
 var port       = process.env.PORT || 8081;
 
 // There is a special routing method which is not derived from any HTTP method. 
@@ -59,16 +60,24 @@ router.post('/ajax/:function', function(req, res){
       stopwords = stopwords.split(" "); 
       //console.log(typeof(stopwords));
     
-      console.log("applying SW removal");
       var regExp = new RegExp();
 
       for(var i in stopwords){
         regExp = new RegExp("\\b"+stopwords[i]+"\\b");
         claim = claim.replace(regExp, ""); 
       }
-      console.log("result after swRemoval: "+claim);
+
+      console.log("claim: "+claim);
+
+      keywords = claim.split(" ");
+     
+      keywords = functions.rmEmptySpace(keywords);
+
+      console.log(keywords);
       
-      res.send(claim); 
+      claim = { "claim" : claim, "keywords": keywords}
+      obj = JSON.stringify(claim);
+      res.send(obj); 
     }
 }); 
 
