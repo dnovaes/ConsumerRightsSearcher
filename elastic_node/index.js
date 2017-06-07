@@ -63,7 +63,7 @@ router.post('/ajax/:function', function(req, res){
       var regExp = new RegExp();
 
       for(var i in stopwords){
-        regExp = new RegExp("\\b"+stopwords[i]+"\\b");
+        regExp = new RegExp("\\b"+stopwords[i]+"\\b", "i");
         claim = claim.replace(regExp, ""); 
       }
 

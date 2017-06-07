@@ -27,14 +27,27 @@
   <div id="div-bottom">
     <div id="results-search" v-if="resultsBool">
       Results:<br>
-      <p><pre>{{ results }}</pre></p>
+      <p v-html="results"></p>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
 
-
+function highlight(content, kw){
+  var kwords = "";
+  for(var i in kw){
+    kwords += "\\b"+kw[i]+"\\b";
+    if((parseFloat(i)+1) < kw.length){
+      kwords += "|";
+    }
+  }
+  regExp = new RegExp(kwords, "ig");
+  content = content.replace(regExp, function(match){
+      return "<span class='b'>"+match+"</span>";
+  });
+  return content;
+}
 
 var app = new Vue({
   el: '#div-parent',
@@ -84,17 +97,11 @@ var app = new Vue({
 
           app.resultsBool = true;
 
-        //transform the string keywords in a proper array of words
-/*      console.log("keywords: "+app.keywords);
-        app.keywords = app.keywords.split(" ");
-        console.log(app.keywords);
-*/
-
           if(app.hits.total > 0){
             app.hits.hits.forEach(function(val, i){
-              //tempContent = val._source.content
-              //tempContent = tempContent.replace(); 
-              app.results += val._source.content;
+              tempContent = val._source.content
+              tempContent = highlight(tempContent, app.keywords); 
+              app.results += tempContent;
               app.results += "\n"
             });
           }else{
@@ -119,7 +126,6 @@ var app = new Vue({
           console.log(res.data);
           app.keywords = res.data.keywords;
           app.claimDataSW = "Keywords: "+res.data.keywords;
-          console.log("end of function ajaxSearchSW");
           app.ajaxSearch(e);
         })
         .catch(function(err){
