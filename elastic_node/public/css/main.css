@@ -126,3 +126,16 @@ height: 100%;
   height: 100%;
   background-color: #aac4e;
 }
+
+#div-parent span.b{
+  display: inline;
+}
+
+/*
+ * General Tags 
+ */
+
+.b{
+  font-weight: bold;
+}
+
