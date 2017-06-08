@@ -3,7 +3,7 @@
 <head>
 
   <script src="js/vue@2.3.3"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="js/axios.min.js"></script>
 
   <link rel="stylesheet" type="text/css" href="css/main.css">
   <title>Siri Law BR</title>
@@ -20,14 +20,16 @@
       <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearchSW">
       <p v-if="outputBool">Searching: {{ claimData }}</p>
     </span>
-    <span id="sw-field">
-      <input v-model="claimDataSW" type="text" name="claim-sw" disabled v-if="resultsBool"> 
+    <span id="sw-field" @click="showRU">
+      <input v-model="claimDataSW" type="text" name="claim-sw" disabled v-if="resultsBool" > 
     </span> 
   </div>
   <div id="div-bottom">
     <div id="results-search" v-if="resultsBool">
-      Results:<br>
-      <p v-html="results"></p>
+      <span class="title">{{ resultsTitle }}</span>
+      <p v-for="ru in resultUnits"> 
+        <comp-result-units :div-id="ru.divId" :span1-id="ru.span1Id" :data="ru.data"></comp-result-units>
+      </p>
     </div>
   </div>
 </div>
@@ -49,25 +51,46 @@ function highlight(content, kw){
   return content;
 }
 
+Vue.component('comp-result-units',{
+  template: '\
+    <div :id="divId" class="resultUnit">\
+      <span :id="span1Id" class="ruIcons">&#8627;</span>\
+      <span class="ruText">{{ data }}</span>\
+    </div>\
+  ',
+  props: ['divId', 'span1Id', 'data']
+}); 
+
 var app = new Vue({
   el: '#div-parent',
   data: {
+    phValue: "Olá! Como posso ajuda-lo?",
     claimData: "",
     claimDataSW: "",
     keywords: "",
     outputBool: false,
     resultsBool: false,
-    phValue: "Olá! Como posso ajuda-lo?",
+    resultsTitle: "Documents: ",
     results: "",
-    hits: ""
+    hits: "",
+    index: 0,
+    resultUnits: [
+    ]
   },
   watch: {
+    //if there is a claim type in the inputfield then outputBool = true (show the desc "searching...")
     claimData: function(event){
       if(app.claimData){
         app.outputBool= true; 
       }else{
         app.outputBool= false; 
-        app.phValue = "Olá! Como posso ajuda-lo?"
+      }
+    },
+    resultsBool: function(){
+      if(app.resultsBool){
+        app.phValue = "Quer ajuda com outra queixa?"
+      }else{
+        app.phValue = "Olá! Como posso ajuda-lo ?"
       }
     }
   },
@@ -83,15 +106,31 @@ var app = new Vue({
         axios.get('http://localhost:9200/cdc/_search?q='+app.claimData, config).then(function (res){
           app.hits = res.data.hits
 
-          app.resultsBool = true;
+          var resultsCount = app.hits.hits.length;
+          app.resultsTitle = "Documents ("+resultsCount+") :";
 
-          if(app.hits.total > 0){
+          if(resultsCount > 0){
+            // for each "hit" = document indexed found
+            // app.results is handled as RawHtml text
             app.hits.hits.forEach(function(val, i){
               tempContent = val._source.content
               tempContent = highlight(tempContent, app.keywords); 
-              app.results += tempContent;
+              app.resultUnits.push({
+                divId: 'resultUnit-'+i,
+                span1Id: 'ruStatus-'+i,
+                data: tempContent
+              });
+              app.index+=1;
+              /*
+              app.results += "<div id='resultUnit-"+i+"' class='resultUnit' >\
+                  <span id='ruStatus-"+i+"' class='ruIcons'>&#8627;</span>\
+                  <span class='ruText'>"+tempContent+"</span>\
+                </div>";
               app.results += "\n"
+              */
             });
+            //now that the vue.instances are populate, we can generate the html data
+            app.resultsBool = true;
           }else{
             app.results = "Nothing was found. Try again with different claim."
             app.delayedRemoveResults();
@@ -125,6 +164,9 @@ var app = new Vue({
           app.resultsBool = false;
           app.results = "";
       }, 5000);
+    },
+    showRU: function(){
+      alert("click working!");
     }
   }
 })

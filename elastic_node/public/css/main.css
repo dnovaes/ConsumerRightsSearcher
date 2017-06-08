@@ -48,12 +48,9 @@ margin: 0 auto;
   margin: 0px 30%;
 }
 
-#div-sw{
-}
-
 #div-bottom{
   width: 100%;
-  height: 30%;
+  height: auto;
 }
 
 #div-img-center{
@@ -65,7 +62,7 @@ margin: 0 auto;
 }
 
 #sw-field{
-  margin-top:5%;
+  margin-top:1%;
 }
 
 #sw-field input{
@@ -97,6 +94,53 @@ margin: 0 auto;
 height: 100%;
 }
 
+#results-search{
+  width: 100%;
+  height: 100%;
+  margin-left: -1.5%; //adjust the space in the right side of the div
+}
+
+#results-search .title{
+  padding: 0 0.5em;
+}
+
+#div-parent span.b{
+  display: inline;
+}
+
+.ruIcons{
+  width: 2%;
+  height: 35px;
+  line-height: 35px;
+  position: relative;
+  float: left;
+  font-size: 20px;
+}
+
+.ruText{
+  width: 90%;
+  height: 35px;
+  overflow: hidden;
+  white-space: pre-line;
+  text-overflow: ellipsis;
+  position: relative;
+  float: left;
+}
+
+.resultUnit{
+  width: 100%;
+  height: 35px;
+  border-style: solid;
+  border-width: 2px;
+  padding: 0.5%;
+  margin: 0.5%;
+  background: linear-gradient(#f7dcdc, white);
+}
+
+.resultUnit:hover{
+  cursor:pointer;
+}
+
 /*
  * Place Holder
  */
@@ -121,15 +165,6 @@ height: 100%;
   text-align: center;
 }
 
-#results-search{
-  width: 100%;
-  height: 100%;
-  background-color: #aac4e;
-}
-
-#div-parent span.b{
-  display: inline;
-}
 
 /*
  * General Tags 
