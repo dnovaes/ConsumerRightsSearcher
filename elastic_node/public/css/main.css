@@ -114,11 +114,11 @@ height: 100%;
   line-height: 35px;
   position: relative;
   float: left;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .ruText{
-  width: 90%;
+  width: 98%;
   height: 35px;
   overflow: hidden;
   white-space: pre-line;
@@ -174,3 +174,14 @@ height: 100%;
   font-weight: bold;
 }
 
+/*
+ * Effects
+ */
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to{
+  opacity: 0;
+}

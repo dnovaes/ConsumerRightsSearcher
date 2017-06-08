@@ -25,12 +25,14 @@
     </span> 
   </div>
   <div id="div-bottom">
+    <transition name="fade">
     <div id="results-search" v-if="resultsBool">
       <span class="title">{{ resultsTitle }}</span>
       <p v-for="ru in resultUnits"> 
-        <comp-result-units :div-id="ru.divId" :span1-id="ru.span1Id" :data="ru.data"></comp-result-units>
+        <comp-result-units :div-id="ru.divId" :span1-id="ru.span1Id" :data="ru.data" @click=""></comp-result-units>
       </p>
     </div>
+    </transition>
   </div>
 </div>
 
@@ -53,12 +55,58 @@ function highlight(content, kw){
 
 Vue.component('comp-result-units',{
   template: '\
-    <div :id="divId" class="resultUnit">\
-      <span :id="span1Id" class="ruIcons">&#8627;</span>\
-      <span class="ruText">{{ data }}</span>\
+    <div :id="divId" class="resultUnit" @click="showRU">\
+      <span :id="span1Id" class="ruIcons" v-html="value">{{ value }}</span>\
+      <span class="ruText" v-html="data">{{ data }}</span>\
     </div>\
   ',
-  props: ['divId', 'span1Id', 'data']
+  props: ['divId', 'span1Id', 'data'],
+  methods: {
+    showRU: function(){
+      var $el =  this.$el;
+      var $spanIcon = this.$el.children[0];
+      var $spanText = this.$el.children[1];
+      console.dir($spanIcon);
+      console.log(this.value);
+
+      if(!this.active){
+
+        Object.assign($el.style, {
+          height: "400px", 
+          borderColor: "yellowgreen"
+        });
+        $spanIcon.style.fontSize = "23px";
+        Object.assign( $spanText.style, {
+          height: $el.style.height,
+          overflowY: "scroll"
+        });
+        this.value = "&#8628";
+        this.active = true
+
+      }else{
+        
+        Object.assign($el.style, {
+          height: "35px", 
+          borderColor: "black"
+        });
+        $spanIcon.style.fontSize = "18px";
+        Object.assign( $spanText.style, {
+          height: $el.style.height,
+          overflowY: "hidden"
+        });
+        this.value = "&#8627";
+        this.active = false
+        $spanText.scrollTop = 0;
+
+      }
+    }
+  },
+  data: function(){
+    return {
+      active: false,
+      value: "&#8627;"
+    }
+  }
 }); 
 
 var app = new Vue({
