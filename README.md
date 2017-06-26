@@ -33,8 +33,8 @@ Added elasticSearch to the project... but still testing. Soon ill release some i
 # WebSystem using Elastic Search 
 -> with nodejs API to comunicate with the elasticsearch
 
-# Instalation of the websystem as a archlinux 
-# (general instructions, also applies for other linux alike systems)
+## Instalation of the websystem as a archlinux 
+## (general instructions, also applies for other linux alike systems)
 
 ## install npm
 ```pacman -S npm```
