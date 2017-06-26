@@ -28,7 +28,7 @@ $ pip install numpy
 $ pip install nlpnet
 ````
 
-Added elasticSearch to the project... but still testing. Soon ill release some info here.
+Added elasticSearch to the project... but still on testing.
 
 # WebSystem using Elastic Search 
 -> with nodejs API to comunicate with the elasticsearch
@@ -60,7 +60,26 @@ Run the server
 server will start at the port localhost:8081 as default
 now just open the address at your browser (localhost:8081). When typing anything at the search field, make sure that u have internet connection and your local elasticsearch is running.
 
+## Running the elastic search in the same server as the websystem
+Download elastic search and unzip the archive anywhere. Currently using 5.0.0
+https://www.elastic.co/downloads/elasticsearch
 
-Initial screen with a output example of
+Configure the elastic search to acc request from the same server. Go to config folder, open elasticsearch.yml.
+makesure the network.host has 'localhost' as value and 'http.port' has a different port(9200 for example) from the websystem (8081). Now add the lines that will make elasticsearch to receive and send request from the same server
+```
+network.host: localhost
+http.port: 9200
+...
+http.cors.enabled: true
+http.cors.allow-origin: "/.*/"
+http.cors.allow-headers: "X-Requested-With, Content-Type, Content-Length, Authorization, Access-Control-Allow-Origin"
+
+```
+Enter the folder and execute elasticsearch
+```./bin/elasticsearch ```
+
+
+
+Initial screen of the web system.
 
 ![Image of Initial System](./elastic_node/public/imgs/screen_after_search_elasticsearch.png)
