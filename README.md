@@ -77,7 +77,11 @@ http.cors.allow-headers: "X-Requested-With, Content-Type, Content-Length, Author
 
 ```
 Enter the folder and execute elasticsearch
-```./bin/elasticsearch ```
+```
+./bin/elasticsearch 
+```
+If you dont have the elastic search indexed with cdc already. Check this link below. It has the default structure to make the web system works.
+https://github.com/dnovaes/Siri-Law-Br/blob/master/elastic_node/indexing_es.md
 
 
 
