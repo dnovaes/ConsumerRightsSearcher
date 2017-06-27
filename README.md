@@ -61,6 +61,7 @@ server will start at the port localhost:8081 as default
 now just open the address at your browser (localhost:8081). When typing anything at the search field, make sure that u have internet connection and your local elasticsearch is running.
 
 ## Running the elastic search in the same server as the websystem
+Pre-requisite: java 8 runtime enviroment (jre8-openjdk)
 Download elastic search and unzip the archive anywhere. Currently using 5.0.0
 https://www.elastic.co/downloads/elasticsearch
 
