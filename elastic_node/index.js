@@ -52,28 +52,30 @@ router.get('/', function (req, res){
 
 //route that handle ajax requests
 router.post('/ajax/:function', function(req, res){
+    console.log("params of the url: ");
     console.log(req.params);
     
     if(req.params.function = "stopwordsremoval"){
-      var stopwords = "well good bad can could may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does have had has who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with not one two three four five your on a an";
-      var claim = req.body.claim;
+      var stopwords = "well good bad can could my may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with one two three four five your on a an";
       stopwords = stopwords.split(" "); 
-      //console.log(typeof(stopwords));
+
+      var claim = req.body.claim;
     
       var regExp = new RegExp();
 
       for(var i in stopwords){
         regExp = new RegExp("\\b"+stopwords[i]+"\\b", "i");
-        claim = claim.replace(regExp, ""); 
+        claim = claim.replace(regExp, "");
       }
 
-      console.log("claim: "+claim);
+      //remove emptySpace
+      regExpWhiteSpace = new RegExp("(\\s+)", "g");
+      claim = claim.replace(regExpWhiteSpace, " ");
 
       keywords = claim.split(" ");
-     
-      keywords = functions.rmEmptySpace(keywords);
 
-      console.log(keywords);
+      //keywords = functions.rmEmptySpace(keywords);
+
       
       claim = { "claim" : claim, "keywords": keywords}
       obj = JSON.stringify(claim);
