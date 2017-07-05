@@ -20,7 +20,7 @@
       <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearchSW">
       <p v-if="outputBool">Searching: {{ claimData }}</p>
     </span>
-    <span id="sw-field" @click="showRU">
+    <span id="sw-field">
       <input v-model="claimDataSW" type="text" name="claim-sw" disabled v-if="resultsBool" > 
     </span> 
   </div>
@@ -212,9 +212,6 @@ var app = new Vue({
           app.resultsBool = false;
           app.results = "";
       }, 5000);
-    },
-    showRU: function(){
-      alert("click working!");
     }
   }
 })
