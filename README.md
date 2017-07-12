@@ -62,8 +62,8 @@ now just open the address at your browser (localhost:8081). When typing anything
 ## Running the elastic search in the same server as the websystem
 Pre-requisite: java 8 runtime enviroment (jre8-openjdk)
 Download elastic search and unzip the archive anywhere. Currently using 5.0.0
-https://www.elastic.co/downloads/elasticsearch
-https://www.elastic.co/downloads/past-releases/elasticsearch-5-0-0
+- https://www.elastic.co/downloads/elasticsearch
+- https://www.elastic.co/downloads/past-releases/elasticsearch-5-0-0
 
 Configure the elastic search to acc request from the same server. Go to config folder, open elasticsearch.yml.
 makesure the network.host has 'localhost' as value and 'http.port' has a different port(9200 for example) from the websystem (8081). Now add the lines that will make elasticsearch to receive and send request from the same server
