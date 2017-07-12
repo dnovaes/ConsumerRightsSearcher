@@ -68,13 +68,14 @@ Download elastic search and unzip the archive anywhere. Currently using 5.0.0
 Configure the elastic search to acc request from the same server. Go to config folder, open elasticsearch.yml.
 makesure the network.host has 'localhost' as value and 'http.port' has a different port(9200 for example) from the websystem (8081). Now add the last three lines that will make elasticsearch to receive and send request from the same server.
 
+Add at the end of file.
 ```
 http.cors.enabled: true
 http.cors.allow-origin: "/.*/"
 http.cors.allow-headers: "X-Requested-With, Content-Type, Content-Length, Authorization, Access-Control-Allow-Origin"
 ```
 
-your fiel will look like this:
+your file will look like this:
 
 ```
 network.host: localhost
