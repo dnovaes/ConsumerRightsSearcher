@@ -1,6 +1,6 @@
 # Siri-Law-Br
 
-## Requirements:
+## Requirements para o jupyter-notebook / lpython:
 
 * python 3.5.2
 * nltk 3.0
@@ -10,7 +10,6 @@ keep pip upgraded. (last version used: pip 8.1.2-1)
 ```
 $ pip install -U pip
 ```
-
 
 ## Nltk installation:
 
@@ -28,7 +27,7 @@ $ pip install numpy
 $ pip install nlpnet
 ````
 
-Added elasticSearch to the project... but still on testing.
+## Added elasticSearch to the project... but still on testing.
 
 # WebSystem using Elastic Search 
 -> with nodejs API to comunicate with the elasticsearch
