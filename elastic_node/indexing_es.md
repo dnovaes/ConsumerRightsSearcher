@@ -15,3 +15,28 @@ you will probably see a msg of sucess after indexing the documents. You wanna ch
 node controller/infoCount.js
 ``` 
 And you will see "count" as value 25 and shards with a total of 5.
+
+# Deleting an whole index
+
+All the functions in this websystem that request commands to the elasticsearch.js API are inside of controller folder.
+The function of removing the whole index document is called deleteIndex.js. pass the name of the index you would like to remove from elasticsearch as a argument.
+
+The example below, cdc is the name of the index i previously indexed.
+```
+node controller/deleteIndex cdc
+```
+
+after that u should a message like this:
+
+"Request complete
+delete {acknowledged: true}"
+
+# Show how many documents are indexed in your elasticsearch
+
+```
+node controller/infoCount.js
+```
+
+a message like this should appear when sucess:
+
+
