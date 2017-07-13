@@ -35,8 +35,16 @@ var lib = {
       }
     }
     return keywords;
-  }
+  },
+  //returns the name of the deepest diretory in the string
+  getLastDirName : function(str){
+    var indexLast1 = str.lastIndexOf('/');
+    var dirName = str.substring(0, indexLast1-1);
 
+    var indexLast = dirName.lastIndexOf('/');
+    dirName = str.substring(++indexLast, indexLast1);
+    return dirName;
+  }
 };
 
 module.exports = lib;
