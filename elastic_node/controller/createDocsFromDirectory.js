@@ -1,5 +1,5 @@
 var fs = require("fs"); //module to read files
-var getDirTitle = require("dirTitle"); //module with utils functions for directory
+var functions  = require("../public/js/ext_functions.js"); //for function getLastDirName
 var client = require("../connection.js"); //module responsible for the call to API elastic search
 
 var dirPath = process.argv[2]!= undefined ? process.argv[2]: 0; 
@@ -40,7 +40,8 @@ var printAllFiles = function(dirPath, callback){
               return console.log(err);
             }
 
-            var title = getDirTitle(dirPath);
+            var title = functions.getLastDirName(dirPath);
+            console.log(title);
 
             var titleName = fs.readFileSync(dirPath+title+".txt").toString().trim();
 
