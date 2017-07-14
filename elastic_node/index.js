@@ -21,6 +21,7 @@ var path       = require('path');
 var bodyparser = require('body-parser');
 var functions  = require(__dirname+"/public/js/ext_functions.js");
 var port       = process.env.PORT || 8081;
+var nlp        = require(__dirname+"/public/js/natural.js");
 
 // There is a special routing method which is not derived from any HTTP method. 
 // This method is used for loading middleware functions at a path for all request methods.
@@ -51,15 +52,21 @@ router.get('/', function (req, res){
 });
 
 //route that handle ajax requests
+//in case of post request, all "variable" are passed in req.body
 router.post('/ajax/:function', function(req, res){
-    console.log("params of the url: ");
-    console.log(req.params);
     
     if(req.params.function = "stopwordsremoval"){
       var stopwords = "well good bad can could my may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with one two three four five your on a an";
       stopwords = stopwords.split(" "); 
 
       var claim = req.body.claim;
+      var posBool = req.body.posBool;
+      var claimTagged = "";
+
+      if(posBool){
+        var words = claim.split(" ");
+        claimTagged = nlp.posTagger(words);
+      }
     
       var regExp = new RegExp();
 
@@ -73,11 +80,9 @@ router.post('/ajax/:function', function(req, res){
       claim = claim.replace(regExpWhiteSpace, " ");
 
       keywords = claim.split(" ");
-
       //keywords = functions.rmEmptySpace(keywords);
 
-      
-      claim = { "claim" : claim, "keywords": keywords}
+      claim = { "claim" : claim, "keywords": keywords, "claimTagged": claimTagged}
       obj = JSON.stringify(claim);
       res.send(obj); 
     }

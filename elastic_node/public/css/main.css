@@ -141,6 +141,27 @@ height: 100%;
   cursor:pointer;
 }
 
+#search-options{
+  margin-bottom: 10px;
+}
+
+#search-options label{
+  font-size: 18px;
+  color: #757575;
+}
+
+#posCheckbox{
+  font-size:15px;
+  width: 17px;
+  height: 17px;
+}
+
+#postagger-result{
+  min-width:30em;
+  overflow:hidden;
+  align:center;
+}
+
 /*
  * Place Holder
  */
