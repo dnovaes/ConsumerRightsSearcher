@@ -93,7 +93,8 @@ Enter the folder and execute elasticsearch
 If you dont have the elastic search indexed with cdc already. Check this link below. It has the default structure to make the web system works.
 https://github.com/dnovaes/Siri-Law-Br/blob/master/elastic_node/indexing_es.md
 
-
+#Link para consulta dos tags usando no no Brill POS Tagger
+- https://www.researchgate.net/figure/228659355_tbl2_Table-5-Part-of-speech-tags-assigned-by-the-Brill-POS-Tagger
 
 Initial screen of the web system.
 
