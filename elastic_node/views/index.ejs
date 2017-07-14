@@ -16,9 +16,16 @@
     <div id="div-img-center">
       <img src="imgs/cute_robot1.jpg"></img>
     </div>
+    <span id="search-options">
+      <input type="checkbox" v-model="posBool" id="posCheckbox">
+      <label for="posCheckbox"> Pos-Tagger</label>
+    </span>
     <span id="claim-field">
       <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearchSW">
       <p v-if="outputBool">Searching: {{ claimData }}</p>
+    </span>
+    <span id="postagger-result">
+      <p style="min-width:30em;overflow:hidden;align:center;"> {{posResult}}</p>
     </span>
     <span id="sw-field">
       <input v-model="claimDataSW" type="text" name="claim-sw" disabled v-if="resultsBool" > 
@@ -117,6 +124,8 @@ var app = new Vue({
     claimDataSW: "",
     keywords: "",
     outputBool: false,
+    posBool: false,
+    posResult: "",
     resultsBool: false,
     resultsTitle: "Documents: ",
     results: "",
@@ -158,11 +167,15 @@ var app = new Vue({
           app.resultsTitle = "Documents ("+resultsCount+") :";
 
           if(resultsCount > 0){
+            //always clear this variable before pushing new results to the page
+            app.resultUnits = []
+
             // for each "hit" = document indexed found
             // app.results is handled as RawHtml text
             app.hits.hits.forEach(function(val, i){
               tempContent = val._source.content
-              tempContent = highlight(tempContent, app.keywords); 
+              tempContent = highlight(tempContent, app.keywords);
+              
               app.resultUnits.push({
                 divId: 'resultUnit-'+i,
                 span1Id: 'ruStatus-'+i,
@@ -181,9 +194,9 @@ var app = new Vue({
             app.resultsBool = true;
           }else{
             app.results = "Nothing was found. Try again with different claim."
-            app.delayedRemoveResults();
+            app.resultsBool = false;
+            app.results = "";
           }
-          //console.log(res.data);
           app.claimData = "";
         }).catch(function (error){
             console.log(error);
@@ -193,25 +206,23 @@ var app = new Vue({
     },
     ajaxSearchSW: function(e){
       if((e.key == "Enter") && (app.claimData != "")){
-
         axios.post('/ajax/stopwordsremoval', {
-          claim: app.claimData
+          claim: app.claimData,
+          posBool: app.posBool
         })
         .then(function (res){
           app.keywords = res.data.keywords;
           app.claimDataSW = "Keywords: "+res.data.keywords;
+          console.log("response from ajaxSearchSW");
+          console.log(res);
+          app.posResult = (res.data.claimTagged != "") ? res.data.claimTagged : "";
+          //call function that request a search in elasticsearch.js
           app.ajaxSearch(e);
         })
         .catch(function(err){
           console.log(err);
         });
       }
-    },
-    delayedRemoveResults: function(){
-      setTimeout(function(){
-          app.resultsBool = false;
-          app.results = "";
-      }, 5000);
     }
   }
 })
