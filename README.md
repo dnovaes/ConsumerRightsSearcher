@@ -11,13 +11,13 @@ keep pip upgraded. (last version used: pip 8.1.2-1)
 $ pip install -U pip
 ```
 
-## Nltk installation:
+### Nltk installation:
 
 ```
 $ sudo pip install -U nltk
 ```
 
-## Nlpnet installation:
+### Nlpnet installation:
 ````
 $ pip install setuptools
 ````
@@ -27,9 +27,9 @@ $ pip install numpy
 $ pip install nlpnet
 ````
 
-## Added elasticSearch to the project... but still on testing.
+# Added elasticSearch to the project... but still on testing.
 
-# WebSystem using Elastic Search 
+## WebSystem using Elastic Search 
 -> with nodejs API to comunicate with the elasticsearch
 
 Instalation of the websystem as a archlinux 
