@@ -14,7 +14,7 @@ var lib = {
     var tagger = new natural.BrillPOSTagger(lexicon, rules);
 
     //var sentence = ["I", "see", "the", "man", "with", "the", "telescope"];
-    return JSON.stringify(tagger.tag(words));
+    return tagger.tag(words);
   }
 }
 
