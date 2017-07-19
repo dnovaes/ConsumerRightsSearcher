@@ -56,19 +56,42 @@ router.get('/', function (req, res){
 router.post('/ajax/:function', function(req, res){
     
     if(req.params.function = "stopwordsremoval"){
-
-      //apply stopword removal to the raw claim. return a object with the claim processed and keywords extracted
-      var result = functions.stopWordsRemoval(req.body.claim);
-
+      
       var posBool = req.body.posBool;
       var claimTagged = "";
 
-      if(posBool){
+      if(!posBool){
+
+        //apply stopword removal to the raw claim. return a object with the claim processed and keywords extracted
+        var result = functions.stopWordsRemoval(req.body.claim);
+        var claim = result.claim;
+        var keywords = result.keywords;
+
+      }else{
+
         var words = req.body.claim.split(" ");
         claimTagged = nlp.posTagger(words);
+
+        var claim = "";
+        //just add as a claim, words that represents a NOUN (NNP,NN or NNPS);
+        for(var i=0; i < claimTagged.length; i++){
+          if(claimTagged[i][1] == "NNP" || claimTagged[i][1] == "NNPS" || claimTagged[i][1] == "NN"){
+            //add space if not the first word
+            if(claim != "") claim += " ";
+            claim += claimTagged[i][0];
+          }
+        }
+
+        //separate the keywords based on the new claim
+        var keywords = claim.split(" ");
+        for(var i=0; i < keywords.length; i++){
+          if (keywords[i] == ''){
+            keywords.splice(i, 1);
+          }
+        }
       }
 
-      claim = { "claim" : result.claim, "keywords": result.keywords, "claimTagged": claimTagged}
+      claim = { "claim" : claim, "keywords": keywords, "claimTagged": claimTagged}
       obj = JSON.stringify(claim);
       res.send(obj); 
     }
