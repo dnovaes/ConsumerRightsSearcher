@@ -213,10 +213,16 @@ var app = new Vue({
         .then(function (res){
           app.keywords = res.data.keywords;
           app.claimDataSW = "Keywords: "+res.data.keywords;
-          console.log("response from ajaxSearchSW");
-          console.log(res);
+
+          //console.log("response from ajaxSearchSW");
+          //console.log(res);
+
           app.posResult = (res.data.claimTagged != "") ? res.data.claimTagged : "";
           //call function that request a search in elasticsearch.js
+
+          //update the app.claimData with the claim processed by the backend. app.claimData will always be
+          // the input for the elasticsearch to search in the documents for matchs.
+          app.claimData = res.data.claim;
           app.ajaxSearch(e);
         })
         .catch(function(err){
