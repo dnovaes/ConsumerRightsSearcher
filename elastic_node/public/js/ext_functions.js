@@ -44,7 +44,36 @@ var lib = {
     var indexLast = dirName.lastIndexOf('/');
     dirName = str.substring(++indexLast, indexLast1);
     return dirName;
+  },
+  stopWordsRemoval : function(claim){
+  
+      var stopwords = "well good bad can could my may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with one two three four five your on a an";
+      stopwords = stopwords.split(" "); 
+
+      var regExp = new RegExp();
+
+      for(var i in stopwords){
+        regExp = new RegExp("\\b"+stopwords[i]+"\\b", "i");
+        claim = claim.replace(regExp, "");
+      }
+
+      //remove emptySpace
+      regExpWhiteSpace = new RegExp("(\\s+)", "g");
+      claim = claim.replace(regExpWhiteSpace, " ");
+
+      var keywords = claim.split(" ");
+
+      //some cases, the regExp left a '' as a word, this is the trick to remove them just in case.
+      for(var i=0; i < keywords.length; i++){
+        if (keywords[i] == ''){
+          keywords.splice(i, 1);
+        }
+      }
+
+      return {claim: claim, keywords: keywords}
+      //keywords = functions.rmEmptySpace(keywords);
   }
+  
 };
 
 module.exports = lib;

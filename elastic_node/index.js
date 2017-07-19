@@ -56,33 +56,19 @@ router.get('/', function (req, res){
 router.post('/ajax/:function', function(req, res){
     
     if(req.params.function = "stopwordsremoval"){
-      var stopwords = "well good bad can could my may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with one two three four five your on a an";
-      stopwords = stopwords.split(" "); 
 
-      var claim = req.body.claim;
+      //apply stopword removal to the raw claim. return a object with the claim processed and keywords extracted
+      var result = functions.stopWordsRemoval(req.body.claim);
+
       var posBool = req.body.posBool;
       var claimTagged = "";
 
       if(posBool){
-        var words = claim.split(" ");
+        var words = req.body.claim.split(" ");
         claimTagged = nlp.posTagger(words);
       }
-    
-      var regExp = new RegExp();
 
-      for(var i in stopwords){
-        regExp = new RegExp("\\b"+stopwords[i]+"\\b", "i");
-        claim = claim.replace(regExp, "");
-      }
-
-      //remove emptySpace
-      regExpWhiteSpace = new RegExp("(\\s+)", "g");
-      claim = claim.replace(regExpWhiteSpace, " ");
-
-      keywords = claim.split(" ");
-      //keywords = functions.rmEmptySpace(keywords);
-
-      claim = { "claim" : claim, "keywords": keywords, "claimTagged": claimTagged}
+      claim = { "claim" : result.claim, "keywords": result.keywords, "claimTagged": claimTagged}
       obj = JSON.stringify(claim);
       res.send(obj); 
     }
