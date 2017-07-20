@@ -1,6 +1,6 @@
 # Siri-Law-Br
 
-## Requirements para o jupyter-notebook / lpython:
+## Requirements for the jupyter-notebook / lpython's files:
 
 * python 3.5.2
 * nltk 3.0
