@@ -74,23 +74,38 @@ router.post('/ajax/:function', function(req, res){
 
         var claim = "";
         //just add as a claim, words that represents a NOUN (NNP,NN or NNPS);
+        // NN =  noun, sigular or mass / NNS = noun, plural
+        // NNP = proper noun, singular / NNPS = proper noun, plural
+        var NounTags = ["NNP", "NNPS", "NN", "NNS"];
+
         for(var i=0; i < claimTagged.length; i++){
-          if(claimTagged[i][1] == "NNP" || claimTagged[i][1] == "NNPS" || claimTagged[i][1] == "NN"){
-            //add space if not the first word
-            if(claim != "") claim += " ";
-            claim += claimTagged[i][0];
-          }
+          NounTags.forEach(function(item, index){
+            if(item == claimTagged[i][1]){
+              if(claim != "") claim += " ";
+              claim += claimTagged[i][0];
+            }
+          });
         }
 
         //separate the keywords based on the new claim
         var keywords = claim.split(" ");
+
+        //detecting and removing empty ''
         for(var i=0; i < keywords.length; i++){
           if (keywords[i] == ''){
+            keywords.splice(i, 1);
+          }
+          
+          //Removing some error judgment for DT as a NN
+          if(keywords[i] == "I"){
             keywords.splice(i, 1);
           }
         }
       }
 
+      //claim is the var that will be sent to the elasticsearch.
+      claim = functions.stopWordsRemoval(claim).claim;
+      console.log(claim);
       claim = { "claim" : claim, "keywords": keywords, "claimTagged": claimTagged}
       obj = JSON.stringify(claim);
       res.send(obj); 
