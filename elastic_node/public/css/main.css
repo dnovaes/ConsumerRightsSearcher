@@ -166,9 +166,39 @@ height: 100%;
 }
 
 #postagger-tab{
+  position: relative;
+  float:left;
   width:10em;
   height: 1.5em;
   background-color:#006ca9;
+  color:white;
+  font-weight:bold;
+  text-align:center;
+  cursor:pointer;
+  font-size: 15px;
+  margin-bottom: -4px;
+}
+
+#keywords-tab{
+  position: relative;
+  float:left;
+  width:10em;
+  height: 1.5em;
+  background-color:red;
+  color:white;
+  font-weight:bold;
+  text-align:center;
+  cursor:pointer;
+  font-size: 15px;
+  margin-bottom: -4px;
+}
+
+#synonyms-tab{
+  position: relative;
+  float:left;
+  width:10em;
+  height:1.5em;
+  background-color:green;
   color:white;
   font-weight:bold;
   text-align:center;
