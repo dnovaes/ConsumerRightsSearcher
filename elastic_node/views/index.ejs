@@ -24,8 +24,9 @@
       <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearchSW">
       <p v-if="outputBool">Searching: {{ claimData }}</p>
     </span>
-    <span id="postagger-result">
-      <p style="min-width:30em;overflow:hidden;align:center;"> {{posResult}}</p>
+    <span id="postagger-tab" v-if="resultsBool" @click="showPosTagger">POS Tagger</span>
+    <span id="postagger-result" v-if="posDivShow" @click="showPosTagger">
+      <p> {{posResult}}</p>
     </span>
     <span id="sw-field">
       <input v-model="claimDataSW" type="text" name="claim-sw" disabled v-if="resultsBool" > 
@@ -36,7 +37,7 @@
     <div id="results-search" v-if="resultsBool">
       <span class="title">{{ resultsTitle }}</span>
       <p v-for="ru in resultUnits"> 
-        <comp-result-units :div-id="ru.divId" :span1-id="ru.span1Id" :data="ru.data" @click=""></comp-result-units>
+        <comp-result-units :div-id="ru.divId" :span1-id="ru.span1Id" :data="ru.data"></comp-result-units>
       </p>
     </div>
     </transition>
@@ -124,9 +125,10 @@ var app = new Vue({
     claimDataSW: "",
     keywords: "",
     outputBool: false,
-    posBool: false,
-    posResult: "",
-    resultsBool: false,
+    posBool: false, //indicate to system if should apply the tagged on the claim or not
+    posResult: "", // var the has the contents of pos
+    posDivShow: false, //shows the div content of pos taggs
+    resultsBool: false, //bool that sinalize the systems to show the div of results
     resultsTitle: "Documents: ",
     results: "",
     hits: "",
@@ -229,6 +231,10 @@ var app = new Vue({
           console.log(err);
         });
       }
+    },
+    showPosTagger: function(){
+      app.posDivShow = !app.posDivShow; 
+      console.log("test showPosTagger");
     }
   }
 })

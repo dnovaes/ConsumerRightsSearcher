@@ -157,9 +157,24 @@ height: 100%;
 }
 
 #postagger-result{
-  min-width:30em;
-  overflow:hidden;
-  align:center;
+  width: 80%;
+  background-color: slategray;
+  z-index: 99;
+  position: absolute;
+  left: 10%;
+  top: 50%;
+}
+
+#postagger-tab{
+  width:10em;
+  height: 1.5em;
+  background-color:#006ca9;
+  color:white;
+  font-weight:bold;
+  text-align:center;
+  cursor:pointer;
+  font-size: 15px;
+  margin-bottom: -4px;
 }
 
 /*
