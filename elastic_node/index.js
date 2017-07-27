@@ -1,4 +1,3 @@
-//4919415
 /*
  * ex1: "I made the purchase and payment for two products in \
 the PurpleFire.com store on December 9th. And they have 15 days to do \
@@ -8,7 +7,6 @@ the posting. But there is no doing. And I've been waiting for more than\
 the conversations filed. And I want to point out here that the \
 PurpleFire store has no CNPJ and no address on the site. I would not recommend\
 anyone to make any purchase with the store mentioned."
-
 ex2 :
 i would like to have my money back based on the product that i bought in 25 days back then. It suffered some decadential loss but still not satisfied with my product."
 */
