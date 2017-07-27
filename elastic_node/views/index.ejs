@@ -25,9 +25,9 @@
       <p v-if="outputBool">Searching: {{ claimData }}</p>
     </span>
     <div id="tabs">
-      <span id="postagger-tab" v-if="resultsBool" @click="showPosTagger">POS Tagger</span>
-      <span id="keywords-tab" v-if="resultsBool" @click="showKeywords">Keywords</span>
-      <span id="synonyms-tab" v-if="resultsBool" @click="">Synonyms</span>
+      <span id="postagger-tab" class="tab-unit" v-if="resultsBool" @click="showPosTagger">POS Tagger</span>
+      <span id="keywords-tab" class="tab-unit" v-if="resultsBool" @click="showKeywords">Keywords</span>
+      <span id="synonyms-tab" class="tab-unit" v-if="resultsBool" @click="">Synonyms</span>
     </div>
     <span id="postagger-result" v-if="posDivShow" @click="showPosTagger">
       <p> {{posResult}}</p>
