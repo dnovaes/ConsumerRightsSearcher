@@ -9,7 +9,7 @@ margin: 0 auto;
   }
   
   #div-img-center{
-    width: auto;
+    width: 100%;
     height: 250px;
   }
 }
@@ -21,7 +21,7 @@ margin: 0 auto;
   }
   
   #div-img-center{
-    width: auto;
+    width: 100%;
     height: 320px;
   }
 }
@@ -33,10 +33,14 @@ margin: 0 auto;
   }
 
   #div-img-center{
-    width: auto;
+    width: 100%;
     height: 384px;
   }
 
+}
+
+#div-img-center{
+  text-align:center;
 }
 
 #div-parent{
@@ -53,8 +57,29 @@ margin: 0 auto;
   height: auto;
 }
 
-#div-img-center{
-  text-align:center;
+#div-opacity-config{
+  background-color:#485565;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 100%;
+  z-index: 8;
+  opacity: 0.4;
+}
+
+#div-config{
+  position: absolute;
+  top: 40%;
+  left: 33%;
+  width: 40%;
+  height: 80px;
+  padding: 15px;
+  z-index: 9;
+  border-width: 2px;
+  border-color: #9191ff;
+  border-style: solid;
+  background-color: white;
 }
 
 #div-parent span{
@@ -78,6 +103,10 @@ margin: 0 auto;
   width:100%;
 }
 
+#claim-field{
+  margin: 0% -2px;
+}
+
 #claim-field, #claim-field input{
   width:100%;
 }
@@ -86,7 +115,6 @@ margin: 0 auto;
   border-style: solid;
   border-color: #9191ff;
   height: 35px;
-  padding: 0 3%;
 }
 
 
@@ -106,6 +134,19 @@ height: 100%;
 
 #div-parent span.b{
   display: inline;
+}
+
+#icons-bar{
+  width:100%;
+  height: 30px;
+}
+
+#gear-icon{
+  width: 30px;
+  height: 30px;
+  float: right;
+  cursor: pointer;
+  content:url("../imgs/icon_gear1.png");
 }
 
 .ruIcons{

@@ -7,12 +7,14 @@
 
   <link rel="stylesheet" type="text/css" href="css/main.css">
   <title>Siri Law BR</title>
-
 </head>
 <body>
 
 <div id="div-parent">
   <div id="div-top">
+    <div id="icons-bar">
+      <div id="gear-icon" class="icon" @click="toggleConfigDiv(true)"></div>
+    </div>
     <div id="div-img-center">
       <img src="imgs/cute_robot1.jpg"></img>
     </div>
@@ -21,7 +23,7 @@
       <label for="posCheckbox"> Pos-Tagger</label>
     </span>
     <span id="claim-field">
-      <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" v-on:keydown="ajaxSearchSW">
+      <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" @keydown="ajaxSearchSW">
       <p v-if="outputBool">Searching: {{ claimData }}</p>
     </span>
     <div id="tabs">
@@ -29,12 +31,24 @@
       <span id="keywords-tab" class="tab-unit" v-if="resultsBool" @click="showKeywords">Keywords</span>
       <span id="synonyms-tab" class="tab-unit" v-if="resultsBool" @click="">Synonyms</span>
     </div>
+    <!-- toggled spans/div -->
+    <div id="div-config" v-if="configDivBool">
+      <span id="search-struct-config">Choose the type of documents you want to receive:</span>
+      <span id="search-struct-config">
+        <input type="radio" id="sectionRadio" value="section" v-model="configSearchStruct">
+        <label for="sectionRadio"> Sections</label>
+        <input type="radio" id="articleRadio" value="article" v-model="configSearchStruct">
+        <label for="articleRadio"> Articles</label>
+      </span>
+    </div>
+    <div id="div-opacity-config" v-if="configDivBool" @click="toggleConfigDiv(false)"></div>
     <span id="postagger-result" v-if="posDivShow" @click="showPosTagger">
       <p> {{posResult}}</p>
     </span>
     <span id="sw-field" v-if="kwordsDivShow">
       <input v-model="claimDataSW" type="text" name="claim-sw" disabled > 
     </span> 
+    <!-- -->
   </div>
   <div id="div-bottom">
     <transition name="fade">
@@ -63,6 +77,28 @@ function highlight(content, kw){
       return "<span class='b'>"+match+"</span>";
   });
   return content;
+}
+
+function getSynonyms(keywords){
+  var config = {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
+  };
+
+  keywords.forEach(function(keyword, i){
+    axios.get('http://thesaurus.altervista.org/thesaurus/v1?word='+keyword+'&language=en_US&output=json&key=hDIA5jHnTlXbyA8SPLw5').then(function (res){
+      console.log("synonyms of keyword: "+keyword);
+      res.data.response.forEach(function(val, i){
+        console.log(val.list.synonyms);
+      });
+    }).catch(function(error){
+      console.log("found a error in thesaurus");
+      console.dir(error);
+    });
+  });
+  return 1;
+  //return synonyms keywords
 }
 
 Vue.component('comp-result-units',{
@@ -124,7 +160,7 @@ Vue.component('comp-result-units',{
 var app = new Vue({
   el: '#div-parent',
   data: {
-    phValue: "Olá! Como posso ajuda-lo?",
+    phValue: "Hey there! How can i help you?",
     claimData: "",
     claimDataSW: "",
     keywords: "",
@@ -133,13 +169,15 @@ var app = new Vue({
     posResult: "", // var the has the contents of pos
     posDivShow: false, //shows the div content of pos taggs
     kwordsDivShow: false, //shows the content of keywords div
+    configDivBool: false, //bool that sinalizes the systems if it the configDiv should be visible or not
     resultsBool: false, //bool that sinalize the systems to show the div of results
     resultsTitle: "Documents: ",
     results: "",
     hits: "",
     index: 0,
     resultUnits: [
-    ]
+    ],
+    configSearchStruct: "section",
   },
   watch: {
     //if there is a claim type in the inputfield then outputBool = true (show the desc "searching...")
@@ -197,8 +235,10 @@ var app = new Vue({
               app.results += "\n"
               */
             });
+
             //now that the vue.instances are populate, we can generate the html data
             app.resultsBool = true;
+
           }else{
             app.results = "Nothing was found. Try again with different claim."
             app.resultsBool = false;
@@ -221,14 +261,15 @@ var app = new Vue({
           app.keywords = res.data.keywords;
           app.claimDataSW = "Keywords: "+res.data.keywords;
 
-          //console.log("response from ajaxSearchSW");
-          //console.log(res);
+          console.log(res.data.keywords);
+          var synonyms = getSynonyms(res.data.keywords);
 
           app.posResult = (res.data.claimTagged != "") ? res.data.claimTagged : "";
           //call function that request a search in elasticsearch.js
 
-          //update the app.claimData with the claim processed by the backend. app.claimData will always be
-          // the input for the elasticsearch to search in the documents for matchs.
+          // update the app.claimData var with the claim content processed by the backend. 
+          // app.claimData will always contain the input for the elasticsearch to search 
+          // for matchs in the documents
           app.claimData = res.data.claim;
           app.ajaxSearch(e);
         })
@@ -242,6 +283,9 @@ var app = new Vue({
     },
     showKeywords: function(){
       app.kwordsDivShow = !app.kwordsDivShow;
+    },
+    toggleConfigDiv: function(bool){
+      app.configDivBool = bool;
     }
   }
 })
