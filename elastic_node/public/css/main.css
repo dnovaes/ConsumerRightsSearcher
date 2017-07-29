@@ -154,10 +154,11 @@ height: 100%;
 #results-search{
   width: 100%;
   height: 100%;
-  margin-left: -1.5%; //adjust the space in the right side of the div
 }
 
 #results-search .title{
+  width: 100%;
+  display: inline-block;
   padding: 0 0.5em;
 }
 
@@ -189,7 +190,7 @@ height: 100%;
 
 .ruText{
   width: 98%;
-  height: 35px;
+  height: 45px;
   overflow: hidden;
   white-space: pre-line;
   text-overflow: ellipsis;
@@ -199,7 +200,7 @@ height: 100%;
 
 .resultUnit{
   width: 100%;
-  height: 35px;
+  height: 45px;
   border-style: solid;
   border-width: 2px;
   padding: 0.5%;
@@ -249,7 +250,6 @@ height: 100%;
 
 #tabs{
   width: 410px;
-  padding: 0% 3%;
 }
 .tab-unit{
   position: relative;
