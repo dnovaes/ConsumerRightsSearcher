@@ -54,9 +54,7 @@
     <transition name="fade">
     <div id="results-search" v-if="resultsBool">
       <span class="title">{{ resultsTitle }}</span>
-      <p v-for="ru in resultUnits"> 
-        <comp-result-units :div-id="ru.divId" :span1-id="ru.span1Id" :data="ru.data"></comp-result-units>
-      </p>
+        <comp-result-units v-for="ru in resultUnits" :div-id="ru.divId" :span1-id="ru.span1Id" :data="ru.data"></comp-result-units>
     </div>
     </transition>
   </div>
@@ -73,10 +71,79 @@ function highlight(content, kw){
     }
   }
   regExp = new RegExp(kwords, "ig");
-  content = content.replace(regExp, function(match){
-      return "<span class='b'>"+match+"</span>";
-  });
-  return content;
+
+  if(typeof(content)=="string"){
+
+    content = content.replace(regExp, function(match){
+        return "<span class='b'>"+match+"</span>";
+    });
+    return content;
+
+  }else if(typeof(content)=="object"){
+
+    var articles = [];
+    var foundBool = false;
+
+    content.forEach(function(article, i){
+
+      article = article.replace(regExp, function(match){
+          foundBool = true;
+          return "<span class='b'>"+match+"</span>";
+      });
+      if(foundBool){
+        articles.push(article);
+        foundBool = false;
+      }
+
+    });
+    return articles;
+
+  }
+}
+
+//split the content data string in the desirable type: section or article.
+//return an array o segments of this content string
+function splitDocument(content, type){
+  //if( type == 'article'){
+    var articles=[];
+
+    //pattern for start of the article
+    //original pattern at the beggining of the conception:
+    //(?<![\w\d])Art(?![\w\d]) but negative lookbehind doesnt work in js (?!>)
+
+    regExp = new RegExp("(?:^|\\s)Article ([\\d]+)|(?:^|\\s)Art. ([\\d]+)");
+
+    var i=0;
+    while(content.length>0){
+      //get start pos of the article
+      var startPosMatch = regExp.exec(content);
+      /*
+      console.log("\nContent to check");
+      console.log(content);
+      console.log("startPosMatch");
+      console.dir(startPosMatch);
+      */
+
+      if(startPosMatch){
+        articles[i] = startPosMatch[0];
+        content = content.substr(startPosMatch.index+(startPosMatch[0].length), content.length-1);
+
+        var endPosMatch = regExp.exec(content);
+        //console.log("endPosMatch");
+        //console.dir(endPosMatch);
+        if(endPosMatch){
+          articles[i] = articles[i] + content.substr(0, endPosMatch.index-1); 
+          content = content.substr(endPosMatch.index, content.length-1);
+        }else{
+          articles[i] = articles[i] + content;
+          content = "";
+        }
+      }
+      i++;
+    }
+  //}
+  //else = nothing to do
+  return articles; 
 }
 
 function getSynonyms(keywords){
@@ -114,8 +181,8 @@ Vue.component('comp-result-units',{
       var $el =  this.$el;
       var $spanIcon = this.$el.children[0];
       var $spanText = this.$el.children[1];
-      console.dir($spanIcon);
-      console.log(this.value);
+      //console.dir($spanIcon);
+      //console.log(this.value);
 
       if(!this.active){
 
@@ -134,7 +201,7 @@ Vue.component('comp-result-units',{
       }else{
         
         Object.assign($el.style, {
-          height: "35px", 
+          height: "45px", 
           borderColor: "black"
         });
         $spanIcon.style.fontSize = "18px";
@@ -174,7 +241,7 @@ var app = new Vue({
     resultsTitle: "Documents: ",
     results: "",
     hits: "",
-    index: 0,
+    //index: 0,
     resultUnits: [
     ],
     configSearchStruct: "section",
@@ -190,7 +257,7 @@ var app = new Vue({
     },
     resultsBool: function(){
       if(app.resultsBool){
-        app.phValue = "Quer ajuda com outra queixa?"
+        app.phValue = "Would you like to ask again?"
       }else{
         app.phValue = "Olá! Como posso ajuda-lo ?"
       }
@@ -208,35 +275,64 @@ var app = new Vue({
         axios.get('http://localhost:9200/cdc/_search?q='+app.claimData, config).then(function (res){
           app.hits = res.data.hits
 
-          var resultsCount = app.hits.hits.length;
-          app.resultsTitle = "Documents ("+resultsCount+") :";
+          //app.hits.hits.length = tell how many results were found.
+          if(app.hits.hits.length> 0){
 
-          if(resultsCount > 0){
             //always clear this variable before pushing new results to the page
             app.resultUnits = []
 
-            // for each "hit" = document indexed found
-            // app.results is handled as RawHtml text
-            app.hits.hits.forEach(function(val, i){
-              tempContent = val._source.content
-              tempContent = highlight(tempContent, app.keywords);
-              
-              app.resultUnits.push({
-                divId: 'resultUnit-'+i,
-                span1Id: 'ruStatus-'+i,
-                data: tempContent
-              });
-              app.index+=1;
-              /*
-              app.results += "<div id='resultUnit-"+i+"' class='resultUnit' >\
-                  <span id='ruStatus-"+i+"' class='ruIcons'>&#8627;</span>\
-                  <span class='ruText'>"+tempContent+"</span>\
-                </div>";
-              app.results += "\n"
-              */
-            });
+            if(app.configSearchStruct=="section"){
 
-            //now that the vue.instances are populate, we can generate the html data
+              app.resultsTitle = "Documents ("+app.hits.hits.length+") :";
+
+              // for each "hit" = document indexed found
+              // app.results is handled as RawHtml text
+
+              app.hits.hits.forEach(function(val, i){
+                tempContent = val._source.content
+
+                tempContent = highlight(tempContent, app.keywords);
+                
+                app.resultUnits.push({
+                  divId: 'resultUnit-'+i,
+                  span1Id: 'ruStatus-'+i,
+                  data: tempContent
+                });
+                //app.index+=1;
+              });
+
+            }else{
+
+              //article model
+              var j=0;
+              app.hits.hits.forEach(function(val, i){
+                tempContent = val._source.content
+
+                //TODO: 
+                var articles= splitDocument(tempContent, app.configSearchStruct);
+                app.resultsTitle = "Documents ("+articles.length+") :";
+
+                //TODO: if the content wasnt highlighted, remove the article from the tempContent.
+                articles = highlight(articles, app.keywords);
+                console.dir(articles);
+              
+                for(var k=0;k<articles.length;k++){
+                
+                  app.resultUnits.push({
+                    divId: 'resultUnit-'+j,
+                    span1Id: 'ruStatus-'+j,
+                    data: articles[k]
+                  });
+                  j++;
+                  //app.index+=1;
+
+                }
+              });
+
+            }
+
+
+            //now that the vue.instances are populate, we can visualize the content in the page
             app.resultsBool = true;
 
           }else{
@@ -261,8 +357,7 @@ var app = new Vue({
           app.keywords = res.data.keywords;
           app.claimDataSW = "Keywords: "+res.data.keywords;
 
-          console.log(res.data.keywords);
-          var synonyms = getSynonyms(res.data.keywords);
+          //var synonyms = getSynonyms(res.data.keywords);
 
           app.posResult = (res.data.claimTagged != "") ? res.data.claimTagged : "";
           //call function that request a search in elasticsearch.js
