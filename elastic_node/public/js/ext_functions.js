@@ -48,8 +48,9 @@ var lib = {
   stopWordsRemoval : function(claim){
   
       var stopwords = "well good bad can could my may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with one two three four five your on a an";
-      var romanianNumerals = "I II III IV V VI VII VIII IX X XI XII XIII XIV";
-      stopwords = stopwords+" "+romanianNumerals;
+      var filter_pronouns= "i";
+      var filter_romanianNumerals = "I II III IV V VI VII VIII IX X XI XII XIII XIV";
+      stopwords = stopwords+" "+filter_romanianNumerals+" "+filter_pronouns;
       stopwords = stopwords.split(" "); 
 
       var regExp = new RegExp();
