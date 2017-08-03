@@ -72,9 +72,7 @@ function checkforSynonyms(){
 
     app.synonyms.forEach(function(ele, elei){
       ele.forEach(function(val, vali){
-        console.log(kw[i]+" == "+val+" ?");
         if( kw[i] == val){
-          console.log("it is a synonym: "+kw[i]);
           flag = true;
           kw.splice(i, 1);
         }
@@ -90,10 +88,10 @@ function checkforSynonyms(){
     });
 
   }
-  console.log(kw);
-  console.log(app.keywords);
-  console.log(app.synonyms);
 
+}
+function checkSpecialChar(ch){
+  if(ch=="?") return true;
 }
 
 function highlight(content){
@@ -103,6 +101,9 @@ function highlight(content){
 
   var kwords = "";
   for(var i in kw){
+    if(checkSpecialChar(kw[i])){
+      kw[i]="\\?";
+    }
     kwords += "\\b"+kw[i]+"\\b";
     if((parseFloat(i)+1) < kw.length){
       kwords += "|";
