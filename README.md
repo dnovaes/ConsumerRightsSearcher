@@ -100,4 +100,4 @@ https://github.com/dnovaes/Siri-Law-Br/blob/master/elastic_node/indexing_es.md
 
 Initial screen of the web system.
 
-![Image of Initial System](./elastic_node/public/imgs/screen_after_search_elasticsearch.png)
+![Image of Initial System](./elastic_node/public/imgs/initial_screen.png)
