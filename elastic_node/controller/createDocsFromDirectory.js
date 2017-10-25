@@ -1,3 +1,12 @@
+/*#################################################
+
+                  HOW TO USE
+
+    node thisfile.js arg
+    arg = directoryPath of texts to index
+
+################################################### */
+
 var fs = require("fs"); //module to read files
 var functions  = require("../public/js/ext_functions.js"); //for function getLastDirName
 var client = require("../connection.js"); //module responsible for the call to API elastic search
@@ -40,17 +49,17 @@ var printAllFiles = function(dirPath, callback){
               return console.log(err);
             }
 
-            var title = functions.getLastDirName(dirPath);
-            console.log(title);
+            var folderName = functions.getLastDirName(dirPath);
+            console.log(folderName);
 
-            var titleName = fs.readFileSync(dirPath+title+".txt").toString().trim();
+            var titleName = fs.readFileSync(dirPath+folderName).toString().trim();
 
             // key 'title' and 'type' are required.
             jsonObj = {
               index: 'cdc',
               type: titleName.trim(),
               body: {
-                title: title,
+                title: folderName,
                 content: data
               }
             };
