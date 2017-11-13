@@ -24,7 +24,7 @@
     </span>
     <span id="claim-field">
       <input v-model="claimData" type="text" name="claim-field" :placeholder="phValue" @keydown="ajaxSearchSW">
-      <p v-if="outputBool">Searching: {{ claimData }}</p>
+      <!-- <p v-if="outputBool">Searching: {{ claimData }}</p> -->
     </span>
     <div id="tabs">
       <span id="postagger-tab" class="tab-unit" v-if="resultsBool" @click="showPosTagger">POS Tagger</span>
@@ -60,6 +60,8 @@
   </div>
 </div>
 
+<script src="js/home.js"></script>
+<!-- 
 <script type="text/javascript">
 
 function checkforSynonyms(){
@@ -391,7 +393,7 @@ var app = new Vue({
     },
     ajaxSearchSW: function(e){
       if((e.key == "Enter") && (app.claimData != "")){
-        axios.post('/ajax/stopwordsremoval', {
+        axios.post('/ajax/stopwordsremovalPT', {
           claim: app.claimData,
           posBool: app.posBool
         })
@@ -432,6 +434,6 @@ var app = new Vue({
 })
 
 </script>
-
+-->
 </body>
 </html>
