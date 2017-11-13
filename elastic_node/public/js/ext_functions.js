@@ -46,7 +46,6 @@ var lib = {
     return dirName;
   },
   stopWordsRemoval : function(claim){
-  
       var stopwords = "well good bad can could my may might would this those less more same her his our mine my from until only them was were will am among instead otherwise above under what when where do does who that which whom shall , they other are under their it into by for a an of the and to in art. -   or paragraph its section be than may as if there any with one two three four five your on a an";
       var filter_other= "i have had has \\?";
       var filter_romanianNumerals = "I II III IV V VI VII VIII IX X XI XII XIII XIV";
@@ -75,8 +74,61 @@ var lib = {
 
       return {claim: claim, keywords: keywords}
       //keywords = functions.rmEmptySpace(keywords);
-  }
+  },
+  stopWordsRemovalPT : function(claim){
+
+      claim = " "+claim+" ";
+
+      //remove point, exclamation, interrogation marks
+      regCharMarks = new RegExp("(\\.)|(\\?)|(\\!)", "g");
+      claim = claim.replace(regCharMarks, "");
+
   
+      var stopwords = "eu meu poderia gostaria disto isso deste esse desta esta dessa essa menos mais ele ela eles elas dela dele nosso nossa até apenas era eram sou uma um para ou ao de da do que em no na ter com sem nao não mas porem porém entretanto todavia ainda se os as";
+      //var filter_romanianNumerals = "I II III IV V VI VII VIII IX X XI XII XIII XIV";
+      filter_romanianNumerals = "";
+      var numerals = "1 2 3 4 5 6 7 8 9";
+      stopwords = stopwords+" "+filter_romanianNumerals+" "+numerals;
+      stopwords = stopwords.split(" ");
+
+      var articleVowels = "a e é í o u";
+      articleVowels = articleVowels.split(" ");
+
+      var regExp = new RegExp();
+
+      //regExp removes a word contain vogals as described above and also remove the spaces besides the vowel. This expression is replaced for a single space
+      for(i=0;i<articleVowels.length; i++){
+        regExp = new RegExp("\\s"+articleVowels[i]+"\\s", "ig");
+        claim = claim.replace(regExp, " ");
+      }
+
+      for(i=0;i<stopwords.length; i++){
+        // \b pattern that checks for a word that contains exactly what is between \b
+        // i = case insensitive, g = global search
+
+        regExp = new RegExp("\\b"+stopwords[i]+"\\b", "ig");
+        claim = claim.replace(regExp, "");
+      }
+
+      //remove emptySpace
+      regExpWhiteSpace = new RegExp("(\\s+)", "g");
+      claim = claim.replace(regExpWhiteSpace, " ");
+
+
+      var keywords = claim.split(" ");
+
+
+      //some cases, the regExp left a '' as a word, this do the trick to remove them just in case.
+      for(var i=0; i < keywords.length; i++){
+        if (keywords[i] == '' || keywords[i] == '.'){
+          keywords.splice(i, 1);
+        }
+      }
+
+      console.log(claim, keywords);
+      return {claim: claim, keywords: keywords}
+      //keywords = functions.rmEmptySpace(keywords);
+  }
 };
 
 module.exports = lib;
