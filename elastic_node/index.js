@@ -1,25 +1,14 @@
-/*
- * ex1: "I made the purchase and payment for two products in \
-the PurpleFire.com store on December 9th. And they have 15 days to do \
-the posting. But there is no doing. And I've been waiting for more than\
-1 month. I contacted the company several times and talked to Amanda\
-(amandapt1313@gmail.com), but they did not solve my problem. I have all\
-the conversations filed. And I want to point out here that the \
-PurpleFire store has no CNPJ and no address on the site. I would not recommend\
-anyone to make any purchase with the store mentioned."
-ex2 :
-i would like to have my money back based on the product that i bought in 25 days back then. It suffered some decadential loss but still not satisfied with my product."
-*/
-
 // BASE SETUP 
 
 var express    = require('express')
+const client   = require('./controller/connection.js');
 var app        = express()
 var path       = require('path');
 var bodyparser = require('body-parser');
 var functions  = require(__dirname+"/public/js/ext_functions.js");
-var port       = process.env.PORT || 8081;
+var port       = process.env.PORT || 3000;
 var nlp        = require(__dirname+"/public/js/natural.js");
+const http       = require('http');
 
 // There is a special routing method which is not derived from any HTTP method. 
 // This method is used for loading middleware functions at a path for all request methods.
@@ -52,8 +41,7 @@ router.get('/', function (req, res){
 //route that handle ajax requests
 //in case of post request, all "variable" are passed in req.body
 router.post('/ajax/:function', function(req, res){
-    
-    if(req.params.function = "stopwordsremoval"){
+    if(req.params.function === "stopwordsremovalPT"){
       
       var posBool = req.body.posBool;
       var claimTagged = "";
@@ -61,7 +49,8 @@ router.post('/ajax/:function', function(req, res){
       if(!posBool){
 
         //apply stopword removal to the raw claim. return a object with the claim processed and keywords extracted
-        var result = functions.stopWordsRemoval(req.body.claim);
+        var result = functions.stopWordsRemovalPT(req.body.claim);
+
         var claim = result.claim;
         var keywords = result.keywords;
 
@@ -102,8 +91,7 @@ router.post('/ajax/:function', function(req, res){
       }
 
       //claim is the var that will be sent to the elasticsearch.
-      claim = functions.stopWordsRemoval(claim).claim;
-      console.log(claim);
+      console.log("searching for keywords: "+claim);
       claim = { "claim" : claim, "keywords": keywords, "claimTagged": claimTagged}
       obj = JSON.stringify(claim);
       res.send(obj); 
@@ -111,7 +99,8 @@ router.post('/ajax/:function', function(req, res){
 }); 
 
 // route with parameters ex: localhost:8081/elastic/:id
-router.get('/elastic/:id', function(req, res){
+router.get('/elastic/', function(req, res){
+    /*
     var routePath = "Route path: "+req.originalUrl;
     var fullUrl = "Request URL: "+ "http://"+req.hostname+":"+port+req.originalUrl;
 
@@ -121,7 +110,35 @@ router.get('/elastic/:id', function(req, res){
     body+= "<p>Params: "+JSON.stringify(req.params)+"</p>";
 
     res.send(body);
-    
+    */
+
+    let q = req.query.q;
+    q.replace(/[\\$'"]/g, "\\$&");
+
+    //API of elasticsearch.js to connect the actual elastic search
+    let esParams = {
+      index: 'cdc',
+      q: q
+    }
+    client.search(esParams).then(function(response){
+      res.send(response);
+    });
+
+    /*
+    http.get('http://localhost:9200/cdc/_search?q=\''+q+'\'', function(response) {
+        //console.log("Got response: " + response.statusCode);
+        var str = '';
+
+        response.on('data', function (chunk) {
+              str += chunk;
+         });
+
+        response.on('end', function () {
+             res.send(str);
+        });
+    });
+    */
+
     //other alternatives at sending content to client
     
     //res.write();
@@ -130,16 +147,6 @@ router.get('/elastic/:id', function(req, res){
     //res.set('Content-Type', 'text/html');
     //res.send(...);
 });
-
-//validation of a param
-//router.param('name', function
-
-/*
-router.get('/:viewname', function (req, res){
-    //res.render('default', { viewname: req.params.viewname+req.query.color });
-    res.render('default', { viewname: req.params.viewname});
-});
-*/
 
 //router contain functions that not allow the request to go beyound it (res.send)
 app.use('/', router);
@@ -165,5 +172,5 @@ app.use(function(req, res, next){
 // START THE SERVER
 if(!module.parent) {
   app.listen(port);
-  console.log("Server started at the port: "+port);
+  console.log("Website Server started at the port: "+port);
 }
