@@ -46,6 +46,7 @@ router.post('/ajax/:function', function(req, res){
       var posBool = req.body.posBool;
       var claimTagged = "";
 
+      //Part of Speech Tagger
       if(!posBool){
 
         //apply stopword removal to the raw claim. return a object with the claim processed and keywords extracted
@@ -91,7 +92,7 @@ router.post('/ajax/:function', function(req, res){
       }
 
       //claim is the var that will be sent to the elasticsearch.
-      console.log("searching for keywords: "+claim);
+      console.log("ajax/stopwordsremovalPT keywords extracted: "+claim);
       claim = { "claim" : claim, "keywords": keywords, "claimTagged": claimTagged}
       obj = JSON.stringify(claim);
       res.send(obj); 
@@ -122,7 +123,8 @@ router.get('/elastic/', function(req, res){
     }
     client.search(esParams).then(function(response){
       res.send(response);
-    });
+    })
+    .catch((err) => console.log(err));
 
     /*
     http.get('http://localhost:9200/cdc/_search?q=\''+q+'\'', function(response) {
