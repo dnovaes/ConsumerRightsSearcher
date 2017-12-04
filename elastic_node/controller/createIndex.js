@@ -1,4 +1,4 @@
-var client = require("../connection.js");
+var client = require("./connection.js");
 var process = require("process");
 
 client.indices.create({
