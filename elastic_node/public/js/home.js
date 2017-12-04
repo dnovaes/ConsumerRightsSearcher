@@ -2,29 +2,39 @@
 function checkforSynonyms(){
     
   //check if keyword has synonyms
-  var kw = app.keywords;
+  //if it find that keywords has synonyms, it adds all the others keywords-synonyms in the array of synonyms
+  let kw = app.keywords;
   flag = false;
 
   for(var i=0; i < kw.length; i++){
-
     app.synonyms.forEach(function(ele, eli){
+      //ele = element value,
+      //eli =  element index
+      //console.log(ele, eli);
+
+      //compares if element in array of synonyms is equal to keyword.
+      //if it is indeed, it is removed from keywords array right away
       ele.forEach(function(val, vali){
         if( kw[i] == val){
           flag = true;
           kw.splice(i, 1);
+          //console.log(kw);
         }
       });
 
       if(flag){
         var length = app.synonyms[eli].length;
+        console.log(app.synonyms[eli]);
         for(var j=0; j<app.synonyms[eli].length; j++){
           kw.unshift(app.synonyms[eli][j]);
         }
         flag = false;
+        //force break of the loop
+        i = kw.length;
       }
     });
-
   }
+  //console.log(kw, app.keywords);
 }
 
 function highlight(content){
@@ -217,13 +227,12 @@ var app = new Vue({
       phValue: "Descreva seu problema",
       claimData: "",
       claimDataSW: "", //contains the message of keywords of claim
-      keywords: "",
+      keywords: [],
       synonyms: [
-        ["volta", "reembolso"],
+        ["devolução", "reembolso", "volta"],
         ["tempo", "dias"],
-        ["uso", "vícios"]
-        ["usei", "vícios"],
-        ["defeito", "vícios"]
+        ["uso", "vícios", "defeito", "falha"],
+        ["pagamento", "cobrança"]
       ],
       outputBool: false,
       posBool: false, //indicate to system if it should apply the POS Tagger on the claim or not
@@ -246,9 +255,6 @@ var app = new Vue({
     } 
   },
   watch: {
-    "vueHeader.claimData": function (newValue, oldValue) {
-        this.claimData= vueHeader.claimData;
-    },
     //if there is a claim type in the inputfield then outputBool = true (show the desc "searching...")
     claimData: function(event){
       if(app.claimData){
@@ -278,14 +284,15 @@ var app = new Vue({
         }
       };
 
+      console.log("Queixa antes de enviar ao servidor para pre-processamento (app.claimData): ", app.claimData);
+      console.log('link: /elastic/?q='+app.keywords);
 
-      console.log("app.claimData: ", app.claimData);
+      axios.get('/elastic/?q='+app.keywords, config).then(function (res){
 
-      axios.get('http://localhost:3000/elastic/?q='+app.claimData, config).then(function (res){
-        console.log(res);
+        console.log("Pré-processamento da queixa finalizado");
+
         app.hits = res.data.hits
-
-        console.log(app.hits.hits);
+        //console.log(app.hits.hits);
 
         //app.hits.hits.length = tell how many results were found.
         if(app.hits.hits.length> 0){
@@ -319,7 +326,7 @@ var app = new Vue({
           }else{ //split Document in articles
 
             var j=0;
-            console.log(app.keywords);
+            //console.log(app.keywords);
 
             app.hits.hits.forEach(function(val, i){
               tempContent = val._source.content
@@ -400,12 +407,17 @@ var app = new Vue({
           posBool: app.posBool
         })
         .then(function (res){
+  
+          console.log("Após remover stopwords, encontrei as seguintes keywords:");
+          console.log(res);
+          
           app.keywords = res.data.keywords;
 
           //check if keywords has synonyms and add then to app.keywords
-          //checkforSynonyms();
+          checkforSynonyms();
 
           app.claimDataSW = "Keywords: "+app.keywords;
+          console.log(app.claimDataSW);
 
           //var synonyms = getSynonyms(res.data.keywords);
 
@@ -440,7 +452,7 @@ var app = new Vue({
             ',
             data: function(){
               return {
-                claimData: vueHeader.claimData
+                claimData: app.claimData
               }
             },
             mounted: function(){
@@ -452,11 +464,8 @@ var app = new Vue({
           });
 
           //this will replace #textarea-claim
-          new textareaComponent().$mount('#textarea-claim');
+          //new textareaComponent().$mount('#textarea-claim');
 
-          let elClaim = document.getElementById("textarea-claim");
-          elClaim.focus();
-          
         }
       }
     }
@@ -467,28 +476,6 @@ function startChatbot(){
   //initialize variables for chatmessages
   app.nMsgsBot = 0;
   app.nMsgsUser= 0;
-
-  //scroll down to the chatbot div
-  document.getElementById('chatbot-content').scrollIntoView();
-
-  //make div of typing texts in chatbot to flicker
-  elTypingBox = document.getElementById("typingbox");
-
-  //focus on input of typing message to the chatbot
-  app.$refs["chatbot-input"].focus();
-
-  var cnt = 0;
-  var timer = setInterval(function(){
-    if (cnt==9){
-      elTypingBox.style.border = "none";
-      elTypingBox.style["border-bottom"] = "1px solid darkblue";
-      clearInterval(timer);
-    }else{
-      //cnt % 2 == 1 ? app.$refs["chatbot-input"].style.border = "1px solid gray" : app.$refs["chatbot-input"].style.border = "none";
-      cnt % 2 == 1 ? elTypingBox.style.border = "none" : elTypingBox.style.border = "2px solid darkblue";
-    }
-    cnt++;
-  }, 800);
 
   //instanciate items of the chatbot like the claim of the user typed already, first message of chatbot...stuff
   //User claim [first message] 
